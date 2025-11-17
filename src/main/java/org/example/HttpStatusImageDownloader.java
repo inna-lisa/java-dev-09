@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class HttpStatusImageDownloader {
-   public void downloadStatusImage(int code) throws IOException, InterruptedException {
+   public void downloadStatusImage(int code) throws StatusException {
 
        String url;
        HttpResponse<InputStream> response;
@@ -27,10 +27,6 @@ public class HttpStatusImageDownloader {
                    .build();
            response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
 
-       } catch (IOException | InterruptedException e) {
-           throw e;
-       }
-
        String [] fileName = url.split("/");
        Path currentDir = Paths.get(System.getProperty("user.dir"));
 
@@ -41,5 +37,12 @@ public class HttpStatusImageDownloader {
 
        InputStream is = response.body();
        Files.copy(is, outputPath, StandardCopyOption.REPLACE_EXISTING);
+
+       } catch (IOException | InterruptedException e) {
+           if (e instanceof InterruptedException) {
+               Thread.currentThread().interrupt();
+           }
+           throw new StatusException("There is not image for HTTP status " + code, e);
+       }
    }
 }

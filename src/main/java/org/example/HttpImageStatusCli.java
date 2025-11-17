@@ -17,10 +17,9 @@ public class HttpImageStatusCli {
                     HttpStatusImageDownloader httpStatusImageDownloader = new HttpStatusImageDownloader();
                     httpStatusImageDownloader.downloadStatusImage(code);
 
-                } catch (IOException e) {
-                    System.out.println("There is not image for HTTP status " + code);
-                } catch (InterruptedException e) {
+                } catch (StatusException e) {
                     e.printStackTrace();
+
                 } finally {
                     scanner.close();
                 }

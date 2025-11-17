@@ -10,7 +10,7 @@ public class HttpStatusChecker {
 
     String url = "https://http.cat/";
 
-    public String getStatusImage(int code) throws IOException, InterruptedException {
+    public String getStatusImage(int code) throws StatusException {
 
         try {
 
@@ -29,7 +29,10 @@ public class HttpStatusChecker {
             }
 
         } catch (IOException | InterruptedException e) {
-            throw e;
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            throw new StatusException("There is not image for HTTP status " + code, e);
         }
     }
 }
